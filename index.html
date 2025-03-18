@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteo de Amigo Secreto</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main class="main-content">
+        <header class="header-banner">
+            <h1 class="main-title">Amigo Secreto</h1>
+        </header>
+
+        <section class="input-section">
+            <h2 class="section-title">Digite el nombre de sus amigos</h2>
+            <div class="input-container">
+                <input type="text" id="nombre" class="input-name" placeholder="Escribe un nombre" onkeypress="if(event.key === 'Enter') adicionarNombre()">
+                <button class="button-add" onclick="adicionarNombre()">Añadir</button>
+            </div>
+
+            <div class="list-container">
+                <h3>Lista de Amigos:</h3>
+                <ul id="lista-amigos" class="name-list"></ul>
+            </div>
+
+            <div class="button-container">
+                <button class="button-draw" onclick="sortearAmigos()">Sortear Amigos</button>
+                <button class="button-reset" onclick="resetLista()">Reset</button>
+            </div>
+
+            <div id="resultado" class="resultado oculto">
+                <h3>Resultado:</h3>
+                <ul id="parejas-sorteadas"></ul>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const amigos = [];
+
+        function adicionarNombre() {
+            const input = document.getElementById('nombre');
+            const nombre = input.value.trim();
+
+            if (!nombre) {
+                alert('Por favor, ingresa un nombre válido.');
+                return;
+            }
+
+            amigos.push(nombre);
+            input.value = '';
+            actualizarLista();
+        }
+
+        function actualizarLista() {
+            const listaAmigos = document.getElementById('lista-amigos');
+            listaAmigos.innerHTML = '';
+
+            amigos.forEach(amigo => {
+                const nuevoElemento = document.createElement('li');
+                nuevoElemento.textContent = amigo;
+                listaAmigos.appendChild(nuevoElemento);
+            });
+        }
+
+        function sortearAmigos() {
+            if (amigos.length < 2 || amigos.length % 2 !== 0) {
+                alert('La lista debe contener un número par de amigos y al menos dos participantes.');
+                return;
+            }
+
+            const amigosDesordenados = [...amigos].sort(() => Math.random() - 0.5);
+            const parejas = [];
+
+            for (let i = 0; i < amigosDesordenados.length; i += 2) {
+                parejas.push(`${amigosDesordenados[i]} ❤ ${amigosDesordenados[i + 1]}`);
+            }
+
+            const resultado = document.getElementById('parejas-sorteadas');
+            resultado.innerHTML = '';
+
+            parejas.forEach(par => {
+                const parejaElemento = document.createElement('li');
+                parejaElemento.textContent = par;
+                resultado.appendChild(parejaElemento);
+            });
+
+            document.getElementById('resultado').classList.remove('oculto');
+        }
+
+        function resetLista() {
+            amigos.length = 0;
+            actualizarLista();
+            document.getElementById('resultado').classList.add('oculto');
+        }
+    </script>
+</body>
+</html>
